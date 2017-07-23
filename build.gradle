@@ -21,10 +21,29 @@ repositories {
 
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  testCompile 'junit:junit:4.11'
+  testCompile "junit:junit:4.12"
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+  testCompile "com.natpryce:hamkrest:1.4.1.0"
 }
 
 task wrapper(type: Wrapper) {
   gradleVersion = "2.7"
 }
+
+
+test {
+    include 'dandy/**'
+    scanForTestClasses true
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+
+    beforeTest { desc ->
+        print "${desc.className.substring("dandy.".length())}: ${desc.name.replace("_", " ")}"
+    }
+    afterTest { desc, result ->
+        println " -> ${result.resultType}"
+    }
+}
+
