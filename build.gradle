@@ -1,0 +1,55 @@
+buildscript {
+  ext.kotlin_version = '1.1.2-2'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'dandy.HelloWorldKt'
+
+defaultTasks 'run'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  compile "com.sparkjava:spark-kotlin:1.0.0-alpha"
+  //compile "com.sparkjava:spark-core:2.6.0"
+  compile "ch.qos.logback:logback-classic:1.2.3"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre8"
+  compile "org.jetbrains.kotlin:kotlin-reflect"
+  
+  testCompile "junit:junit:4.12"
+  testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+  testCompile "com.natpryce:hamkrest:1.4.1.0"
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = "2.7"
+}
+
+
+test {
+    include 'dandy/**'
+    scanForTestClasses true
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+
+    beforeTest { desc ->
+        print "${desc.className.substring("dandy.".length())}: ${desc.name.replace("_", " ")}"
+    }
+    afterTest { desc, result ->
+        println " -> ${result.resultType}"
+    }
+}
+
